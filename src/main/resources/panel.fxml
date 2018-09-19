@@ -14,7 +14,7 @@
          <right>
             <VBox prefHeight="400.0" prefWidth="150.0" styleClass="rightSideBar" BorderPane.alignment="TOP_CENTER">
                <children>
-                  <JFXTreeTableView />
+                  <JFXTreeTableView fx:id="table" prefWidth="150.0"/>
                   <JFXButton fx:id="drawFinished" mnemonicParsing="false" onMouseClicked="#finishDraw" styleClass="rightButton" text="完成绘制">
                      <VBox.margin>
                         <Insets bottom="20.0" left="45.0" top="20.0" />

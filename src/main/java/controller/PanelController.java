@@ -1,12 +1,24 @@
 package controller;
 
+import Helper.TreeTableHelper;
+import com.jfoenix.controls.JFXTreeTableColumn;
+import com.jfoenix.controls.JFXTreeTableView;
+import com.jfoenix.controls.RecursiveTreeItem;
+import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import entity.DrawnLine;
 import entity.LineList;
 import entity.Point;
+import entity.shape.Shape;
+import entity.shape.ShapeFactory;
+import entity.shape.ShapeType;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.TreeItem;
+import javafx.scene.control.TreeTableColumn;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 
@@ -26,16 +38,28 @@ public class PanelController implements Initializable{
     @FXML
     private Canvas canvas;
 
+    @FXML
+    private JFXTreeTableView<Shape> table;
+
     private static GraphicsContext graphicsContext;
 
     private DrawnLine drawnLine;
 
     private LineList lineList;
 
+    private ObservableList<Shape> shapes = FXCollections.observableArrayList();
+
+    private ShapeFactory shapeFactory;
+
+    private TreeTableHelper treeTableHelper;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         graphicsContext = canvas.getGraphicsContext2D();
+        shapeFactory = new ShapeFactory();
+        treeTableHelper = new TreeTableHelper();
         initDraw(graphicsContext);
+        initTable();
     }
 
     @FXML
@@ -59,15 +83,32 @@ public class PanelController implements Initializable{
     @FXML
     private void endDraw(MouseEvent e) {
         this.lineList.addDrawnLine(this.drawnLine);
-        System.out.println(lineList.size());
     }
 
     private void initDraw(GraphicsContext gc){
-        refreshCanvas(gc);
-        setStrokeColor(gc, Color.BLUE);
+        this.refreshCanvas(gc);
+        gc.setStroke(Color.BLUE);
+        gc.setLineWidth(1);
     }
 
-    private void refreshCanvas(GraphicsContext gc) {
+    private void initTable() {
+        table.setShowRoot(false);
+        final TreeItem<Shape> root = new RecursiveTreeItem<>(shapes, RecursiveTreeObject::getChildren);
+        table.setRoot(root);
+        JFXTreeTableColumn column = this.treeTableHelper.initColumn("形状");
+        column.setPrefWidth(table.getPrefWidth());
+        table.getColumns().add(column);
+    }
+
+    @FXML
+    private void finishDraw() {
+        Shape shape = shapeFactory.getShape(ShapeType.Circle);
+        shape.setLines(lineList);
+        lineList = null;
+        shapes.add(shape);
+    }
+
+    public void refreshCanvas(GraphicsContext gc) {
         double canvasWidth = gc.getCanvas().getWidth();
         double canvasHeight = gc.getCanvas().getHeight();
 
@@ -77,18 +118,9 @@ public class PanelController implements Initializable{
         gc.fill();
         gc.fillRect(0, 0, canvasWidth, canvasHeight);
         gc.strokeRect(0, 0, canvasWidth, canvasHeight);
-    }
-
-    private void setStrokeColor(GraphicsContext gc, Color color) {
-        gc.setStroke(color);
+        gc.setStroke(Color.BLUE);
         gc.setLineWidth(1);
     }
-
-    @FXML
-    private void finishDraw() {
-
-    }
-
 
 
 }
