@@ -1,18 +1,17 @@
 package Helper;
 
+import entity.LineList;
+import entity.shape.Shape;
+import entity.shape.ShapeType;
+
 public class DetectShapeHelper {
-
-    public void detectCircle() {
-
+    public ShapeType detect(LineList list) {
+        switch (list.size()){
+            case 1: return ShapeType.Circle;
+            case 3: return ShapeType.Triangle;
+            case 4: return ShapeType.Rectangle;
+            default: return ShapeType.Unidentified;
+        }
     }
-
-    public void detectRectangle() {
-
-    }
-
-    public void detectTriangle() {
-
-    }
-
 
 }

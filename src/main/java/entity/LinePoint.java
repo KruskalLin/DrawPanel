@@ -7,12 +7,12 @@ package entity;
  * @Date: 2018/9/19
  * @Todo:
  */
-public class Point {
+public class LinePoint {
     private double x;
     private double y;
 
 
-    public Point(double x, double y) {
+    public LinePoint(double x, double y) {
         this.x = x;
         this.y = y;
     }
@@ -27,7 +27,7 @@ public class Point {
 
     @Override
     public String toString() {
-        return "Point{" +
+        return "LinePoint{" +
                 "x=" + x +
                 ", y=" + y +
                 '}';

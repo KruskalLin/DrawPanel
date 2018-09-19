@@ -1,5 +1,6 @@
 package controller;
 
+import Helper.DetectShapeHelper;
 import Helper.TreeTableHelper;
 import com.jfoenix.controls.JFXTreeTableColumn;
 import com.jfoenix.controls.JFXTreeTableView;
@@ -7,7 +8,7 @@ import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import entity.DrawnLine;
 import entity.LineList;
-import entity.Point;
+import entity.LinePoint;
 import entity.shape.Shape;
 import entity.shape.ShapeFactory;
 import entity.shape.ShapeType;
@@ -18,12 +19,10 @@ import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.TreeItem;
-import javafx.scene.control.TreeTableColumn;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 
 import java.net.URL;
-import java.util.Iterator;
 import java.util.ResourceBundle;
 
 /**
@@ -53,11 +52,14 @@ public class PanelController implements Initializable{
 
     private TreeTableHelper treeTableHelper;
 
+    private DetectShapeHelper detectShapeHelper;
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         graphicsContext = canvas.getGraphicsContext2D();
         shapeFactory = new ShapeFactory();
         treeTableHelper = new TreeTableHelper();
+        detectShapeHelper = new DetectShapeHelper();
         initDraw(graphicsContext);
         initTable();
     }
@@ -75,7 +77,7 @@ public class PanelController implements Initializable{
 
     @FXML
     private void keepDraw(MouseEvent e) {
-        drawnLine.addPoint(new Point(e.getX(),e.getY()));
+        drawnLine.addPoint(new LinePoint(e.getX(),e.getY()));
         graphicsContext.lineTo(e.getX(), e.getY());
         graphicsContext.stroke();
     }
@@ -102,10 +104,15 @@ public class PanelController implements Initializable{
 
     @FXML
     private void finishDraw() {
-        Shape shape = shapeFactory.getShape(ShapeType.Circle);
-        shape.setLines(lineList);
-        lineList = null;
-        shapes.add(shape);
+        if(lineList==null){
+            Shape shape = shapeFactory.getShape(ShapeType.Unidentified);
+            shapes.add(shape);
+        }else {
+            ShapeType shapeType = detectShapeHelper.detect(lineList);
+            Shape shape = shapeFactory.getShape(shapeType);
+            lineList = null;
+            shapes.add(shape);
+        }
     }
 
     public void refreshCanvas(GraphicsContext gc) {

@@ -12,6 +12,6 @@ public class ShapeFactory {
         } else if(shapeType == ShapeType.Triangle){
             return new Triangle(ShapeType.Triangle);
         }
-        return null;
+        return new Unidentified(ShapeType.Unidentified);
     }
 }

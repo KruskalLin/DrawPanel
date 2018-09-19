@@ -10,20 +10,20 @@ import java.util.Iterator;
  * @Date: 2018/9/19
  * @Todo:
  */
-public class DrawnLine implements Iterable<Point> {
+public class DrawnLine implements Iterable<LinePoint> {
 
-    private final ArrayList<Point> points = new ArrayList<Point>();
+    private final ArrayList<LinePoint> linePoints = new ArrayList<LinePoint>();
 
-    public void addPoint(Point point) {
-        this.points.add(point);
+    public void addPoint(LinePoint linePoint) {
+        this.linePoints.add(linePoint);
     }
 
     @Override
-    public Iterator<Point> iterator() {
+    public Iterator<LinePoint> iterator() {
         return new Line();
     }
 
-    private class Line implements Iterator<Point> {
+    private class Line implements Iterator<LinePoint> {
 
         private int index;
 
@@ -33,14 +33,14 @@ public class DrawnLine implements Iterable<Point> {
 
         @Override
         public boolean hasNext() {
-            return this.index < points.size();
+            return this.index < linePoints.size();
         }
 
         @Override
-        public Point next() {
+        public LinePoint next() {
             if (this.hasNext()) {
                 this.index++;
-                return points.get(this.index - 1);
+                return linePoints.get(this.index - 1);
             }
             return null;
         }
