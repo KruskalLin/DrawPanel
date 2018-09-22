@@ -1,4 +1,4 @@
-package entity;
+package entity.lines;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -10,7 +10,7 @@ import java.util.Iterator;
  * @Date: 2018/9/19
  * @Todo:
  */
-public class DrawnLine implements Iterable<LinePoint> {
+public class Line implements Iterable<LinePoint> {
 
     private final ArrayList<LinePoint> linePoints = new ArrayList<LinePoint>();
 
@@ -20,14 +20,14 @@ public class DrawnLine implements Iterable<LinePoint> {
 
     @Override
     public Iterator<LinePoint> iterator() {
-        return new Line();
+        return new DrawnLine();
     }
 
-    private class Line implements Iterator<LinePoint> {
+    private class DrawnLine implements Iterator<LinePoint> {
 
         private int index;
 
-        public Line() {
+        public DrawnLine() {
             this.index = 0;
         }
 

@@ -1,5 +1,7 @@
 package entity.shape;
 
+import entity.lines.LineList;
+
 /**
  * All rights Reserved, Designed by Popping Lim
  *
@@ -8,7 +10,7 @@ package entity.shape;
  * @Todo:
  */
 public class Unidentified extends Shape {
-    public Unidentified(ShapeType shapeType) {
-        super(shapeType);
+    public Unidentified(ShapeType shapeType, LineList lineList) {
+        super(shapeType, lineList);
     }
 }

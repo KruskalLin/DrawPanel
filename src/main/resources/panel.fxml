@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
-<?import com.jfoenix.controls.JFXTreeTableView?>
+<?import controller.ui.ShapeTable?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.PanelController">
+<StackPane fx:id="pane" prefHeight="420.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.PanelController">
    <children>
-      <BorderPane prefHeight="400.0" prefWidth="600.0">
+      <BorderPane prefHeight="420.0" prefWidth="600.0">
          <right>
             <VBox prefHeight="400.0" prefWidth="150.0" styleClass="rightSideBar" BorderPane.alignment="TOP_CENTER">
                <children>
-                  <JFXTreeTableView fx:id="table" prefWidth="150.0" />
+                  <ShapeTable fx:id="table" prefWidth="150.0" />
                   <JFXButton fx:id="drawFinished" mnemonicParsing="false" onMouseClicked="#finishDraw" style="-fx-background-color: grey;" styleClass="rightButton" text="完成绘制" textFill="WHITE">
                      <VBox.margin>
                         <Insets bottom="20.0" left="45.0" top="20.0" />
@@ -30,6 +34,23 @@
                </children>
             </AnchorPane>
          </center>
+         <top>
+            <MenuBar BorderPane.alignment="CENTER">
+              <menus>
+                <Menu mnemonicParsing="false" text="文件">
+                  <items>
+                    <MenuItem mnemonicParsing="false" onAction="#readFile" text="读取" />
+                     <MenuItem mnemonicParsing="false" onAction="#saveFile" text="保存" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="帮助">
+                  <items>
+                    <MenuItem mnemonicParsing="false" onAction="#help" text="使用" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+         </top>
       </BorderPane>
    </children>
-</AnchorPane>
+</StackPane>

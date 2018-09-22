@@ -1,27 +1,36 @@
 package controller;
 
-import Helper.DetectShapeHelper;
-import Helper.TreeTableHelper;
-import com.jfoenix.controls.JFXTreeTableColumn;
-import com.jfoenix.controls.JFXTreeTableView;
-import com.jfoenix.controls.RecursiveTreeItem;
-import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
-import entity.DrawnLine;
-import entity.LineList;
-import entity.LinePoint;
+import com.jfoenix.animation.alert.JFXAlertAnimation;
+import com.jfoenix.controls.JFXAlert;
+import com.jfoenix.controls.JFXDialog;
+import com.jfoenix.controls.JFXDialogLayout;
+import controller.ui.ShapeTable;
+import data.FileService;
+import data.FileServiceImpl;
+import helper.AlertHelper;
+import helper.CanvasHelper;
+import helper.DetectShapeHelper;
+import entity.lines.Line;
+import entity.lines.LineList;
+import entity.lines.LinePoint;
 import entity.shape.Shape;
 import entity.shape.ShapeFactory;
 import entity.shape.ShapeType;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.control.TreeItem;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.stage.DirectoryChooser;
+import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
+import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -38,35 +47,35 @@ public class PanelController implements Initializable{
     private Canvas canvas;
 
     @FXML
-    private JFXTreeTableView<Shape> table;
+    private ShapeTable table;
 
-    private static GraphicsContext graphicsContext;
+    private GraphicsContext graphicsContext;
 
-    private DrawnLine drawnLine;
+    private Line line;
 
     private LineList lineList;
 
-    private ObservableList<Shape> shapes = FXCollections.observableArrayList();
+    private CanvasHelper canvasHelper;
 
-    private ShapeFactory shapeFactory;
+    private FileService fileService;
 
-    private TreeTableHelper treeTableHelper;
+    private AlertHelper alertHelper;
 
     private DetectShapeHelper detectShapeHelper;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         graphicsContext = canvas.getGraphicsContext2D();
-        shapeFactory = new ShapeFactory();
-        treeTableHelper = new TreeTableHelper();
+        canvasHelper = new CanvasHelper();
+        alertHelper = new AlertHelper();
         detectShapeHelper = new DetectShapeHelper();
-        initDraw(graphicsContext);
+        initPanel(graphicsContext);
         initTable();
     }
 
     @FXML
     private void startDraw(MouseEvent e) {
-        this.drawnLine = new DrawnLine();
+        this.line = new Line();
         if (this.lineList == null) {
             lineList = new LineList();
         }
@@ -77,57 +86,84 @@ public class PanelController implements Initializable{
 
     @FXML
     private void keepDraw(MouseEvent e) {
-        drawnLine.addPoint(new LinePoint(e.getX(),e.getY()));
+        line.addPoint(new LinePoint(e.getX(),e.getY()));
         graphicsContext.lineTo(e.getX(), e.getY());
         graphicsContext.stroke();
     }
 
     @FXML
     private void endDraw(MouseEvent e) {
-        this.lineList.addDrawnLine(this.drawnLine);
+        this.lineList.addDrawnLine(this.line);
     }
 
-    private void initDraw(GraphicsContext gc){
-        this.refreshCanvas(gc);
-        gc.setStroke(Color.BLUE);
-        gc.setLineWidth(1);
-    }
-
-    private void initTable() {
-        table.setShowRoot(false);
-        final TreeItem<Shape> root = new RecursiveTreeItem<>(shapes, RecursiveTreeObject::getChildren);
-        table.setRoot(root);
-        JFXTreeTableColumn column = this.treeTableHelper.initColumn("形状");
-        column.setPrefWidth(table.getPrefWidth());
-        table.getColumns().add(column);
-    }
 
     @FXML
     private void finishDraw() {
-        if(lineList==null){
-            Shape shape = shapeFactory.getShape(ShapeType.Unidentified);
-            shapes.add(shape);
-        }else {
-            ShapeType shapeType = detectShapeHelper.detect(lineList);
-            Shape shape = shapeFactory.getShape(shapeType);
-            lineList = null;
-            shapes.add(shape);
+        table.addShape(detectShapeHelper.detectShape(lineList));
+        lineList = null;
+    }
+
+    @FXML
+    private void saveFile() {
+        assert fileService != null;
+        if(fileService == null) {
+            fileService = new FileServiceImpl((Stage) canvas.getScene().getWindow());
+        }
+        DirectoryChooser chooser = new DirectoryChooser();
+        chooser.setTitle("保存文件");
+        File file = chooser.showDialog(canvas.getScene().getWindow());
+        if (file != null) {
+            if(lineList!=null) {
+                finishDraw();
+            }
+            fileService.saveShape(table.getShapes(), file);
         }
     }
 
-    public void refreshCanvas(GraphicsContext gc) {
-        double canvasWidth = gc.getCanvas().getWidth();
-        double canvasHeight = gc.getCanvas().getHeight();
 
-        gc.setFill(Color.WHITE);
-        gc.setStroke(Color.BLACK);
-        gc.setLineWidth(5);
-        gc.fill();
-        gc.fillRect(0, 0, canvasWidth, canvasHeight);
-        gc.strokeRect(0, 0, canvasWidth, canvasHeight);
-        gc.setStroke(Color.BLUE);
-        gc.setLineWidth(1);
+    @FXML
+    private void readFile() {
+        assert fileService != null;
+        if(fileService == null) {
+            fileService = new FileServiceImpl((Stage) canvas.getScene().getWindow());
+        }
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("打开文件");
+        FileChooser.ExtensionFilter shapeFilter = new FileChooser.ExtensionFilter("Shape文件 (*.shape)", "*.shape");
+        fileChooser.getExtensionFilters().add(shapeFilter);
+        File file = fileChooser.showOpenDialog(canvas.getScene().getWindow());
+        if (file != null) {
+            Shape[] shapes = fileService.readShape(file);
+            readShapes(shapes);
+        }
+    }
+
+    @FXML
+    private void help() {
+        alertHelper.setDialog("帮助", "双击可删除对应形状，文件只能读取.shape文件", (Stage) canvas.getScene().getWindow());
+    }
+
+    private void initPanel(GraphicsContext gc){
+        canvasHelper.refreshCanvas(gc);
+        canvasHelper.setStroke(gc, Color.BLUE);
     }
 
 
+
+    private void initTable() {
+        table.initTable();
+        table.setTableEvent(canvasHelper, graphicsContext);
+    }
+
+
+    private void readShapes(Shape[] shapes){
+        canvasHelper.refreshCanvas(graphicsContext);
+        assert shapes != null;
+        if(shapes!=null) {
+            table.setShapes(shapes);
+            for (int i = 0; i < shapes.length; i++) {
+                shapes[i].draw(graphicsContext);
+            }
+        }
+    }
 }

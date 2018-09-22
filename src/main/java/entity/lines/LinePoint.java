@@ -1,4 +1,4 @@
-package entity;
+package entity.lines;
 
 /**
  * All rights Reserved, Designed by Popping Lim

@@ -32,6 +32,7 @@ public class DrawPanel extends Application {
             primaryStage.setScene(new Scene(root));
             primaryStage.show();
         } catch (IOException e) {
+            e.printStackTrace();
             log.log(Level.SEVERE, e.getMessage());
         }
     }
