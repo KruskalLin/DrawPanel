@@ -22,7 +22,7 @@ import java.util.Date;
  * @Date: 2018/9/22
  * @Todo:
  */
-public class FileServiceImpl implements FileService{
+public class FileServiceImpl implements FileService {
 
 
     private DetectShapeHelper detectShapeHelper;
@@ -45,56 +45,54 @@ public class FileServiceImpl implements FileService{
     @Override
     public void saveShape(Shape[] shapes, File dir) {
         LineList[] lineLists = new LineList[shapes.length];
-        for(int i=0;i<shapes.length;i++){
+        for (int i = 0; i < shapes.length; i++) {
             lineLists[i] = shapes[i].getLineList();
         }
         String shapeJson = new Gson().toJson(lineLists);
-        if(!dir.isDirectory()) {
+
+        if (!dir.isDirectory()) {
             alertHelper.setDialog("错误", "这不是文件夹！", this.stage);
         }
         String path = dir.getAbsolutePath();
-        File file = new File(path + System.currentTimeMillis()+".shape");
-
-        if(file.exists()){
+        File file = new File(path + System.currentTimeMillis() + ".shape");
+        if (file.exists()) {
             alertHelper.setDialog("错误", "文件已经存在！", this.stage);
         }
 
         FileOutputStream shapeOutputStream = null;
-        try{
+        try {
             file.createNewFile();
             shapeOutputStream = new FileOutputStream(file);
             shapeOutputStream.write(shapeJson.getBytes());
-        }catch (IOException e){
+        } catch (IOException e) {
             alertHelper.setDialog("错误", "未知错误！", this.stage);
         } finally {
             try {
                 shapeOutputStream.close();
-            }catch (IOException e) {
+            } catch (IOException e) {
                 alertHelper.setDialog("错误", "未知错误！", this.stage);
             }
         }
     }
 
 
-
-
     @Override
     public Shape[] readShape(File file) {
         FileInputStream shapeInputStream = null;
-        if(!file.exists()){
+        if (!file.exists()) {
             alertHelper.setDialog("错误", "文件不存在！", this.stage);
             return null;
         }
         Shape[] shapes = null;
         try {
             shapeInputStream = new FileInputStream(file);
-            byte bytesData[]=new byte[10000000];
-            int cursor=0;
-            while((cursor=shapeInputStream.read(bytesData))!= -1){
-                String data = new String(bytesData,0,cursor);
+            byte[] shapesByteData = new byte[10000000];
+            int cursor = 0;
+            while ((cursor = shapeInputStream.read(shapesByteData)) != -1) {
+                String data = new String(shapesByteData, 0, cursor);
                 LineList[] lineLists = new Gson().fromJson(data, LineList[].class);
                 shapes = new Shape[lineLists.length];
-                for(int i =0;i<lineLists.length;i++){
+                for (int i = 0; i < lineLists.length; i++) {
                     shapes[i] = getShape(lineLists[i]);
                 }
             }
@@ -102,7 +100,7 @@ public class FileServiceImpl implements FileService{
 
         } catch (Exception e) {
             alertHelper.setDialog("错误", "文件读取失败！", this.stage);
-        } finally{
+        } finally {
             try {
                 shapeInputStream.close();
             } catch (IOException e) {

@@ -12,7 +12,7 @@ import java.util.Iterator;
  * @Date: 2018/9/19
  * @Todo:
  */
-public class LineList{
+public class LineList {
 
     private final ArrayList<Line> lines = new ArrayList<Line>();
 
@@ -20,21 +20,21 @@ public class LineList{
         this.lines.add(point);
     }
 
-    public int size(){
+    public int size() {
         return lines.size();
     }
 
     public void draw(GraphicsContext gc) {
-        for(int i=0;i<size();i++){
+        for (int i = 0; i < size(); i++) {
             Line line = lines.get(i);
             LinePoint point = null;
             LinePoint nextPoint = null;
-            for (Iterator iter = line.iterator();iter.hasNext();){
-                if(point == null) {
+            for (Iterator iter = line.iterator(); iter.hasNext(); ) {
+                if (point == null) {
                     point = (LinePoint) iter.next();
                     nextPoint = point;
                 }
-                if(iter.hasNext()) {
+                if (iter.hasNext()) {
                     nextPoint = (LinePoint) iter.next();
                 }
                 gc.strokeLine(point.getX(), point.getY(), nextPoint.getX(), nextPoint.getY());

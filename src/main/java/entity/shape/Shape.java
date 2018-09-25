@@ -5,7 +5,13 @@ import entity.lines.LineList;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.canvas.GraphicsContext;
-
+/**
+ * All rights Reserved, Designed by Popping Lim
+ *
+ * @Author: Popping Lim
+ * @Date: 2018/9/22
+ * @Todo:
+ */
 public abstract class Shape extends RecursiveTreeObject<Shape> {
 
     private StringProperty shapeType = new SimpleStringProperty();

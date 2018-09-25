@@ -43,6 +43,11 @@
                      <MenuItem mnemonicParsing="false" onAction="#saveFile" text="保存" />
                   </items>
                 </Menu>
+                  <Menu mnemonicParsing="false" text="操作">
+                      <items>
+                          <MenuItem mnemonicParsing="false" onAction="#clear" text="重置" />
+                      </items>
+                  </Menu>
                 <Menu mnemonicParsing="false" text="帮助">
                   <items>
                     <MenuItem mnemonicParsing="false" onAction="#help" text="使用" />

@@ -79,6 +79,7 @@ public class PanelController implements Initializable{
         if (this.lineList == null) {
             lineList = new LineList();
         }
+        line.addPoint(new LinePoint(e.getX(),e.getY()));
         graphicsContext.beginPath();
         graphicsContext.moveTo(e.getX(), e.getY());
         graphicsContext.stroke();
@@ -113,7 +114,7 @@ public class PanelController implements Initializable{
         chooser.setTitle("保存文件");
         File file = chooser.showDialog(canvas.getScene().getWindow());
         if (file != null) {
-            if(lineList!=null) {
+            if(lineList != null) {
                 finishDraw();
             }
             fileService.saveShape(table.getShapes(), file);
@@ -143,12 +144,18 @@ public class PanelController implements Initializable{
         alertHelper.setDialog("帮助", "双击可删除对应形状，文件只能读取.shape文件", (Stage) canvas.getScene().getWindow());
     }
 
+    @FXML
+    private void clear() {
+        canvasHelper.refreshCanvas(graphicsContext);
+        table.clearTable();
+        lineList = null;
+        line = null;
+    }
+
     private void initPanel(GraphicsContext gc){
         canvasHelper.refreshCanvas(gc);
         canvasHelper.setStroke(gc, Color.BLUE);
     }
-
-
 
     private void initTable() {
         table.initTable();

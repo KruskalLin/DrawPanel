@@ -57,9 +57,13 @@ public class ShapeTable extends JFXTreeTableView<Shape> {
         return shapeArr;
     }
 
+    public void clearTable() {
+        this.shapes.clear();
+    }
+
 
     private void initShapeColumn() {
-        JFXTreeTableColumn column = this.initColumn("形状");
+        JFXTreeTableColumn<Shape, String> column = this.initColumn("形状");
         column.setPrefWidth(this.getPrefWidth());
         this.getColumns().add(column);
     }
@@ -82,23 +86,25 @@ public class ShapeTable extends JFXTreeTableView<Shape> {
         this.setRowFactory(table-> {
             TreeTableRow<Shape> row = new TreeTableRow<>();
             row.setOnMouseClicked(e->{
-                if(e.getClickCount()==1) {
-                    canvasHelper.refreshCanvas(gc);
-                    for (int i = 0; i < shapes.size(); i++) {
-                        if (shapes.get(i).equals(row.getTreeItem().getValue())) {
-                            canvasHelper.setStroke(gc, Color.RED);
-                            shapes.get(i).draw(gc);
-                        } else {
-                            canvasHelper.setStroke(gc, Color.BLUE);
-                            shapes.get(i).draw(gc);
+                if(row.getTreeItem()!=null) {
+                    if (e.getClickCount() == 1) {
+                        canvasHelper.refreshCanvas(gc);
+                        for (Shape shape : shapes) {
+                            if (shape.equals(row.getTreeItem().getValue())) {
+                                canvasHelper.setStroke(gc, Color.RED);
+                                shape.draw(gc);
+                            } else {
+                                canvasHelper.setStroke(gc, Color.BLUE);
+                                shape.draw(gc);
+                            }
                         }
-                    }
-                    canvasHelper.setStroke(gc, Color.BLUE);
-                } else if(e.getClickCount()==2){
-                    shapes.remove(row.getTreeItem().getValue());
-                    canvasHelper.refreshCanvas(gc);
-                    for (int i = 0; i < shapes.size(); i++) {
-                        shapes.get(i).draw(gc);
+                        canvasHelper.setStroke(gc, Color.BLUE);
+                    } else if (e.getClickCount() == 2) {
+                        shapes.remove(row.getTreeItem().getValue());
+                        canvasHelper.refreshCanvas(gc);
+                        for (Shape shape : shapes) {
+                            shape.draw(gc);
+                        }
                     }
                 }
             });

@@ -1,7 +1,13 @@
 package entity.shape;
 
 import entity.lines.LineList;
-
+/**
+ * All rights Reserved, Designed by Popping Lim
+ *
+ * @Author: Popping Lim
+ * @Date: 2018/9/22
+ * @Todo:
+ */
 public class ShapeFactory {
     public Shape getShape(ShapeType shapeType, LineList lineList){
         if(shapeType == null){
