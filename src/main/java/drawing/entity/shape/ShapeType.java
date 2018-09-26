@@ -1,10 +1,10 @@
-package entity.shape;
+package drawing.entity.shape;
 /**
  * All rights Reserved, Designed by Popping Lim
  *
  * @Author: Popping Lim
  * @Date: 2018/9/22
- * @Todo:
+ * @Todo: enum shape type
  */
 public enum ShapeType {
     Circle("圆"),

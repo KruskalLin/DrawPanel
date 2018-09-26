@@ -1,38 +1,43 @@
-package data;
+package drawing.data;
 
 import com.google.gson.Gson;
-import entity.lines.LineList;
-import entity.shape.Shape;
-import entity.shape.ShapeFactory;
-import entity.shape.ShapeType;
-import helper.AlertHelper;
-import helper.DetectShapeHelper;
+import drawing.entity.lines.LineList;
+import drawing.entity.shape.Shape;
+import drawing.helper.AlertHelper;
+import drawing.helper.ShapeDetectorImpl;
 import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * All rights Reserved, Designed by Popping Lim
  *
  * @Author: Popping Lim
  * @Date: 2018/9/22
- * @Todo:
+ * @Todo: 接口实现类
  */
 public class FileServiceImpl implements FileService {
 
 
-    private DetectShapeHelper detectShapeHelper;
+    private ShapeDetectorImpl detectShapeHelper;
 
     private AlertHelper alertHelper;
 
     private Stage stage;
 
+    private static final int DATA_LENGTH = 10000000;
+
+    private Logger log = Logger.getLogger("FileService");
+
     private FileServiceImpl() {
-        detectShapeHelper = new DetectShapeHelper();
+        detectShapeHelper = new ShapeDetectorImpl();
         alertHelper = new AlertHelper();
     }
 
@@ -43,10 +48,10 @@ public class FileServiceImpl implements FileService {
 
 
     @Override
-    public void saveShape(Shape[] shapes, File dir) {
-        LineList[] lineLists = new LineList[shapes.length];
-        for (int i = 0; i < shapes.length; i++) {
-            lineLists[i] = shapes[i].getLineList();
+    public void saveShape(List<Shape> shapes, File dir) {
+        LineList[] lineLists = new LineList[shapes.size()];
+        for (int i = 0; i < shapes.size(); i++) {
+            lineLists[i] = shapes.get(i).getLineList();
         }
         String shapeJson = new Gson().toJson(lineLists);
 
@@ -65,49 +70,55 @@ public class FileServiceImpl implements FileService {
             shapeOutputStream = new FileOutputStream(file);
             shapeOutputStream.write(shapeJson.getBytes());
         } catch (IOException e) {
-            alertHelper.setDialog("错误", "未知错误！", this.stage);
+            alertHelper.setDialog("错误", "文件写入错误！", this.stage);
+            log.log(Level.SEVERE, e.getMessage());
         } finally {
             try {
                 shapeOutputStream.close();
             } catch (IOException e) {
-                alertHelper.setDialog("错误", "未知错误！", this.stage);
+                alertHelper.setDialog("错误", "字节流关闭错误！", this.stage);
+                log.log(Level.SEVERE, e.getMessage());
             }
         }
     }
 
 
     @Override
-    public Shape[] readShape(File file) {
+    public List<Shape> readShape(File file) {
         FileInputStream shapeInputStream = null;
+        ArrayList<Shape> shapes = new ArrayList<>();
+
         if (!file.exists()) {
             alertHelper.setDialog("错误", "文件不存在！", this.stage);
-            return null;
+            return shapes;
         }
-        Shape[] shapes = null;
+
         try {
             shapeInputStream = new FileInputStream(file);
-            byte[] shapesByteData = new byte[10000000];
+            byte[] shapesByteData = new byte[DATA_LENGTH];
             int cursor = 0;
             while ((cursor = shapeInputStream.read(shapesByteData)) != -1) {
                 String data = new String(shapesByteData, 0, cursor);
                 LineList[] lineLists = new Gson().fromJson(data, LineList[].class);
-                shapes = new Shape[lineLists.length];
-                for (int i = 0; i < lineLists.length; i++) {
-                    shapes[i] = getShape(lineLists[i]);
+                for (LineList lineList : lineLists) {
+                    shapes.add(getShape(lineList));
                 }
             }
             return shapes;
-
         } catch (Exception e) {
             alertHelper.setDialog("错误", "文件读取失败！", this.stage);
+            log.log(Level.SEVERE, e.getMessage());
+
         } finally {
             try {
                 shapeInputStream.close();
             } catch (IOException e) {
-                alertHelper.setDialog("错误", "未知错误！", this.stage);
+                alertHelper.setDialog("错误", "字节流关闭错误！", this.stage);
+                log.log(Level.SEVERE, e.getMessage());
+
             }
         }
-        return null;
+        return shapes;
     }
 
     private Shape getShape(LineList lineList) {

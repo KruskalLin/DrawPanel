@@ -1,2 +1,2 @@
-# DrawPanel
+# drawing.DrawPanel
 Homework of construction class

@@ -1,4 +1,4 @@
-package helper;
+package drawing.helper;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
@@ -9,10 +9,9 @@ import javafx.scene.paint.Paint;
  *
  * @Author: Popping Lim
  * @Date: 2018/9/22
- * @Todo:
+ * @Todo: 用于辅助canvas抽象的一个类
  */
 public class CanvasHelper {
-
 
     public void refreshCanvas(GraphicsContext gc) {
         double canvasWidth = gc.getCanvas().getWidth();

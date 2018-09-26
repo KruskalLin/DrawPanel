@@ -1,4 +1,4 @@
-package entity.lines;
+package drawing.entity.lines;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -8,7 +8,7 @@ import java.util.Iterator;
  *
  * @Author: Popping Lim
  * @Date: 2018/9/19
- * @Todo:
+ * @Todo:  用户画的每一笔线，包含若干个点，继承了迭代器模式
  */
 public class Line implements Iterable<LinePoint> {
 

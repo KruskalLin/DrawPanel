@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
-<?import controller.ui.ShapeTable?>
+<?import drawing.controller.ui.ShapeTable?>
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.canvas.Canvas?>
 <?import javafx.scene.control.Menu?>
@@ -12,16 +12,23 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
-<StackPane fx:id="pane" prefHeight="420.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controller.PanelController">
+<?import drawing.controller.ui.PanelCanvas?>
+<?import com.jfoenix.controls.JFXToggleButton?>
+<StackPane fx:id="pane" prefHeight="420.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="drawing.controller.PanelController">
    <children>
       <BorderPane prefHeight="420.0" prefWidth="600.0">
          <right>
             <VBox prefHeight="400.0" prefWidth="150.0" styleClass="rightSideBar" BorderPane.alignment="TOP_CENTER">
                <children>
-                  <ShapeTable fx:id="table" prefWidth="150.0" />
-                  <JFXButton fx:id="drawFinished" mnemonicParsing="false" onMouseClicked="#finishDraw" style="-fx-background-color: grey;" styleClass="rightButton" text="完成绘制" textFill="WHITE">
+                  <ShapeTable fx:id="table" prefWidth="150.0"/>
+                   <JFXToggleButton fx:id="simulator" text="模拟">
+                       <VBox.margin>
+                           <Insets left="30.0" top="5.0" />
+                       </VBox.margin>
+                   </JFXToggleButton>
+                  <JFXButton fx:id="drawFinished" mnemonicParsing="false" onMouseClicked="#finishDraw" style="-fx-background-color: #72a894;" styleClass="rightButton" text="完成绘制" textFill="WHITE">
                      <VBox.margin>
-                        <Insets bottom="20.0" left="45.0" top="20.0" />
+                        <Insets bottom="20.0" left="45.0" top="5.0" />
                      </VBox.margin>
                   </JFXButton>
                </children>
@@ -30,7 +37,7 @@
          <center>
             <AnchorPane prefHeight="400.0" prefWidth="450.0" BorderPane.alignment="CENTER">
                <children>
-                  <Canvas fx:id="canvas" height="400.0" onMouseDragged="#keepDraw" onMousePressed="#startDraw" onMouseReleased="#endDraw" width="450.0" />
+                  <PanelCanvas fx:id="canvas" height="400.0" width="450.0" />
                </children>
             </AnchorPane>
          </center>

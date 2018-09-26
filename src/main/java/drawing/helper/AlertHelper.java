@@ -1,4 +1,4 @@
-package helper;
+package drawing.helper;
 
 import com.jfoenix.animation.alert.JFXAlertAnimation;
 import com.jfoenix.controls.JFXAlert;
@@ -12,7 +12,7 @@ import javafx.stage.Stage;
  *
  * @Author: Popping Lim
  * @Date: 2018/9/22
- * @Todo:
+ * @Todo: 用于量化生产dialog
  */
 public class AlertHelper {
     public void setDialog(String title, String body, Stage stage) {

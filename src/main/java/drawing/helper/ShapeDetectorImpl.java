@@ -1,22 +1,22 @@
-package helper;
+package drawing.helper;
 
-import entity.lines.LineList;
-import entity.shape.Shape;
-import entity.shape.ShapeFactory;
-import entity.shape.ShapeType;
+import drawing.entity.lines.LineList;
+import drawing.entity.shape.Shape;
+import drawing.entity.shape.ShapeFactory;
+import drawing.entity.shape.ShapeType;
 
 /**
  * All rights Reserved, Designed by Popping Lim
  *
  * @Author: Popping Lim
  * @Date: 2018/9/22
- * @Todo:
+ * @Todo: 用于侦测Shape类型
  */
-public class DetectShapeHelper {
+public class ShapeDetectorImpl implements ShapeDetector {
 
-    public ShapeFactory shapeFactory;
+    private ShapeFactory shapeFactory;
 
-    public DetectShapeHelper () {
+    public ShapeDetectorImpl() throws UnsatisfiedLinkError{
         shapeFactory = new ShapeFactory();
     }
 
@@ -28,14 +28,14 @@ public class DetectShapeHelper {
             default: return ShapeType.Unidentified;
         }
     }
+
+    @Override
     public Shape detectShape(LineList lineList) {
         if(lineList==null){
-            Shape shape = shapeFactory.getShape(ShapeType.Unidentified, lineList);
-            return shape;
+            return shapeFactory.getShape(ShapeType.Unidentified, lineList);
         }else {
             ShapeType shapeType = detect(lineList);
-            Shape shape = shapeFactory.getShape(shapeType, lineList);
-            return shape;
+            return shapeFactory.getShape(shapeType, lineList);
         }
     }
 
